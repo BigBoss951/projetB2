@@ -6,7 +6,7 @@ export default function Navbar() {
       <Link className="text-white font-bold" href={"/"}>
         Projet
       </Link>
-      <Link className="bg-white p-2" href={"/ajouterListes"}>
+      <Link className="bg-white p-2" href={"/pageAjout"}>
         Ajouter
       </Link>
     </nav>
