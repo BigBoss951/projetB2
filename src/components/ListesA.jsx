@@ -15,7 +15,7 @@ export function ListesA() {
 
           <div className="flex gap-2">
             <RemoveBtn/>
-            <Link href={`/caca`}>
+            <Link href={`/test`}>
               <HiPencilAlt size={24} />
             </Link>
           </div>
