@@ -2,25 +2,33 @@ import Link from "next/link";
 import RemoveBtn from "./RemoveBtn";
 import { HiPencilAlt } from "react-icons/hi";
 
+export const getServerSideProps = async () => {
+  try {
+    const res = await fetch('http://localhost:3000/api/places');
 
-export function ListesA() {
-  const id = 1
-    return (
-        <>
-        <div
-          className="p-4 border border-slate-300 my-3 flex justify-between gap-5 items-start">
-          <div>
-            <h2 className="font-bold text-2xl">titre du resto</h2>
-            <div>description du resto</div>
-          </div>
+    if (!res.ok) {
+      throw new Error('Impossible de fetch les sujets')
+    }
+    console.log(res.status)
+    const json = await res.json();
+    console.log(json)
+    return {
+      props: {
+      json
+    }}
+  } catch (error) {
+    return {
+      props: {
+      json: error
+    }}
+  }
+}
 
-          <div className="flex gap-2">
-            <RemoveBtn/>
-            <Link href={`/editSujet/${id}`}>
-              <HiPencilAlt size={24} />
-            </Link>
-          </div>
-        </div>
-      </> 
+export default function ListesA({json}) {
+  console.log(json)
+  return (
+    <>
+      
+    </>
   );
 }
