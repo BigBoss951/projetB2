@@ -1,10 +1,10 @@
 import Navbar from "@/components/navbar";
-import { ListesA } from "@/components/ListesA";
+import { ListesA } from "@/components/affichage_des_éléments";
   
 export default function home() {
   return (
     <>
-      <Navbar />
+      <Navbar/>
       <ListesA />
       <ListesA />
       <ListesA />
