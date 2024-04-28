@@ -1,24 +1,27 @@
-import React, { useState } from 'react';
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from '@/components/navbar';
 
-const PageAjout = () => {
+export default function AddTopic() {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [typeCuisine, setTypeCuisine] = useState("");
     const [nbEtoiles, setNbEtoiles] = useState("");
     const [prixMoyenRestaurant, setPrixMoyenRestaurant] = useState("");
-    
     const [courantArtistique, setCourantArtistique] = useState("");
     const [typeArt, setTypeArt] = useState("");
     const [gratuitOuPayant, setGratuitOuPayant] = useState("");
     const [prix, setPrix] = useState("");
-    
     const [typeBar, setTypeBar] = useState("");
     const [prixMoyen, setPrixMoyen] = useState("");
-    
     const [typeParc, setTypeParc] = useState("");
     const [publicOuPrive, setPublicOuPrive] = useState("");
     const [gratuitOuPayantParc, setGratuitOuPayantParc] = useState("");
     const [prixParc, setPrixParc] = useState("");
+
+    const router = useRouter();
+
 
     const handleCategoryChange = (event) => {
         setSelectedCategory(event.target.value);
@@ -76,6 +79,78 @@ const PageAjout = () => {
         setPrixParc(event.target.value);
     };
 
+    
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!selectedCategory) {
+        alert("Veuillez sélectionner une catégorie.");
+        return;
+    }
+
+    switch (selectedCategory) {
+        case "Restaurant": 
+            if (!typeCuisine || !nbEtoiles || !prixMoyenRestaurant) {
+                alert("Veuillez remplir tous les champs requis pour la catégorie Restaurant.");
+                return;
+            }
+            break;
+        case "Musée":
+            if (!courantArtistique || !typeArt || (!gratuitOuPayant && prix === "")) {
+                alert("Veuillez remplir tous les champs requis pour la catégorie Musée.");
+                return;
+            }
+            break;
+        case "Bar": 
+            if (!typeBar || !prixMoyen) {
+                alert("Veuillez remplir tous les champs requis pour la catégorie Bar.");
+                return;
+            }
+            break;
+        case "Parc": 
+            if (!typeParc || !publicOuPrive || (!gratuitOuPayantParc && prixParc === "")) {
+                alert("Veuillez remplir tous les champs requis pour la catégorie Parc.");
+                return;
+            }
+            break;
+        default:
+            alert("Veuillez sélectionner une catégorie.");
+            return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/api/route", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                selectedCategory,
+                typeCuisine,
+                nbEtoiles,
+                prixMoyenRestaurant,
+                courantArtistique,
+                typeArt,
+                gratuitOuPayant,
+                prix,
+                typeBar,
+                prixMoyen,
+                typeParc,
+                publicOuPrive,
+                gratuitOuPayantParc,
+                prixParc
+            }),
+        });
+
+        if (res.ok) {
+            router.push("/");
+        } else {
+            throw new Error("Erreur lors de la création");
+        }
+    } catch (error) {
+        console.error("Erreur lors de la soumission des données:", error);
+    }
+    };
 
     return(
         <>
@@ -84,13 +159,13 @@ const PageAjout = () => {
                 <label htmlFor="categories" className="block mb-2 font-bold">Choisissez une catégorie :</label>
                 <select id="categories" onChange={handleCategoryChange} className="block w-full p-2 mb-4 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500">
                     <option value="">Sélectionnez une catégorie</option>
-                    <option value="1">Restaurant</option>
-                    <option value="2">Musée</option>
-                    <option value="3">Bar</option>
-                    <option value="4">Parc</option>
+                    <option value="Restaurant">Restaurant</option>
+                    <option value="Musée">Musée</option>
+                    <option value="Bar">Bar</option>
+                    <option value="Parc">Parc</option>
                 </select>
             
-                {selectedCategory === "1" && (
+                {selectedCategory === "Restaurant" && (
                     <div>
                         <label htmlFor="typeCuisine" className="block mb-2 font-bold">Type de cuisine :</label>
                         <input type="text" id="typeCuisine" name="typeCuisine" onChange={handleTypeCuisineChange} className="block w-full p-2 mb-4 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" />
@@ -110,7 +185,7 @@ const PageAjout = () => {
                     </div>
                 )}
 
-                {selectedCategory === "2" && (
+                {selectedCategory === "Musée" && (
                     <div>
                         <label htmlFor="courantArtistique" className="block mb-2 font-bold">Courant artistique (uniquement un choix) :</label>
                         <select id="courantArtistique" onChange={handleCourantArtistiqueChange} className="block w-full p-2 mb-4 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500">
@@ -142,8 +217,7 @@ const PageAjout = () => {
                     </div>
                 )}
 
-
-                {selectedCategory === "3" && (
+                {selectedCategory === "Bar" && (
                     <div>
                         <label htmlFor="typeBar" className="block mb-2 font-bold">Type de bar (ex: bar à vin, bar à cocktail, pub, etc...) :</label>
                         <input type="text" id="typeBar" name="typeBar" onChange={handleTypeBarChange} className="block w-full p-2 mb-4 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" />
@@ -160,8 +234,8 @@ const PageAjout = () => {
                     </div>
                 )}
                 
-                {selectedCategory === "4" && (
-                    <div className="max-w-lg mx-auto p-6 bg-gray-100 rounded-lg">
+                {selectedCategory === "Parc" && (
+                    <div>
                         <label htmlFor="typeParc" className="block mb-2 font-bold">Type de parc (ex: parc floral, parc forestier, ...) :</label>
                         <input type="text" id="typeParc" name="typeParc" onChange={handleTypeParcChange} className="block w-full p-2 mb-4 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" />
                         <label htmlFor="publicOuPrive" className="block mb-2 font-bold">Public ou privé (public ou privé) :</label>
@@ -190,10 +264,8 @@ const PageAjout = () => {
                         )}
                     </div>
                 )}
-                <button className="bg-green-600 font-bold text-white py-3 px-5"> Ajouter </button>
+                <button onClick={handleSubmit} className="bg-green-600 font-bold text-white py-3 px-5"> Ajouter </button>
             </div>
         </>
     );
 }
-
-export default PageAjout;
