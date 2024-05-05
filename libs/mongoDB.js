@@ -12,4 +12,4 @@ const connectMongoDB = (handler) => async (req, res) => {
     
 }
 
-export default connectMongoDB;   
+export default connectMongoDB;
