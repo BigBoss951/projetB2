@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 export function RemoveBtn({ id }) {
     const router = useRouter();
     const removeSujet = async () => {
-        const confirmation = confirm("etes vous sure de vouloir suprimer cette addresse ?")
+        const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette adresse ?")
         if (confirmation) {
             const res = await fetch(`http://localhost:3000/api/route?id=${id}`, {
                 method: "DELETE"
